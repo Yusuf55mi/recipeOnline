@@ -34,27 +34,19 @@ public class UserController {
         return new ResponseEntity<User>(userService.getById(id), HttpStatus.OK);
     }
 
-    @GetMapping("/register")
-    public String register() {
-        return "register";
+    @GetMapping
+    public String loginRegister() {
+        return "login-register";
     }
 
-
-    @GetMapping("/login")
-    public String login() {
-        return "login";
-    }
 
     @PostMapping("/login")
-    public String login(@RequestBody User user,
-                        Model model, RedirectAttributes redirectAttributes) {
+    public String login(@RequestBody User user) {
         User correctUser = userService.getByEmail(user.getEmail());
         if (Objects.equals(user.getPassword(), correctUser.getPassword())) {
-            redirectAttributes.addFlashAttribute("message", "Login successful");
             return "redirect:/homepage";
         } else {
-            model.addAttribute("errorMessage", "Invalid email or password");
-            return "login";
+            return "login-register";
         }
     }
 
