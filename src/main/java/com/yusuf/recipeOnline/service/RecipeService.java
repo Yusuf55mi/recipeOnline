@@ -1,13 +1,13 @@
 package com.yusuf.recipeOnline.service;
 
 import com.yusuf.recipeOnline.model.Recipe;
-import com.yusuf.recipeOnline.model.User;
 import com.yusuf.recipeOnline.repository.RecipeRepository;
-import com.yusuf.recipeOnline.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -21,6 +21,15 @@ public class RecipeService {
 
     public Recipe saveRecipe(Recipe recipe) {
         return repository.save(recipe);
+    }
+
+    public void uploadFile(Long id, MultipartFile file) throws IOException {
+        Recipe recipe = getById(id);
+        if (recipe == null) {
+            throw new EntityNotFoundException("Item not found.");
+        }
+        recipe.setPhoto(file.getBytes());
+        saveRecipe(recipe);
     }
 
     public Recipe getById(Long id) {

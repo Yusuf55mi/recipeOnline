@@ -1,14 +1,13 @@
 package com.yusuf.recipeOnline.controller;
 
+import com.yusuf.recipeOnline.dto.UserDto;
 import com.yusuf.recipeOnline.model.User;
 import com.yusuf.recipeOnline.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Objects;
 
@@ -41,12 +40,12 @@ public class UserController {
 
 
     @PostMapping("/login")
-    public String login(@RequestBody User user) {
+    public ResponseEntity<String> login(@RequestBody UserDto user) {
         User correctUser = userService.getByEmail(user.getEmail());
         if (Objects.equals(user.getPassword(), correctUser.getPassword())) {
-            return "redirect:/homepage";
+            return new ResponseEntity<String>("http://localhost:8080/homepage", HttpStatus.OK);
         } else {
-            return "login-register";
+            return new ResponseEntity<String>("http://localhost:8080/user", HttpStatus.BAD_REQUEST);
         }
     }
 

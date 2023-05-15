@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Recipe List</title>
+    <style>
+        .recipe-details {
+            display: flex;
+        }
+
+        .recipe-image {
+            width: 200px;
+            height: auto;
+            margin-right: 20px;
+        }
+
+        .recipe-content {
+            flex: 1;
+        }
+
+        .recipe-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .recipe-category,
+        .recipe-user {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .recipe-instruction {
+            margin-bottom: 10px;
+        }
+
+        .recipe-ingredients {
+            margin-bottom: 10px;
+        }
+
+        .recipe-ingredient-item {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+<div id="recipeList"></div>
+
+<script>
+    // Gelen verileri kullanarak HTML içeriğini oluşturur
+    function createRecipeHTML(recipe) {
+        var recipeHTML = `
+                <div class="recipe-details">
+                    <div class="recipe-image">
+                        <img src="path/to/recipe-photo.jpg" alt="Recipe Photo">
+                    </div>
+                    <div class="recipe-content">
+                        <div class="recipe-title">${recipe.title}</div>
+                        <div class="recipe-category">Kategori: ${recipe.categoryName}</div>
+                        <div class="recipe-user">Kullanıcı: ${recipe.userName}</div>
+                        <div class="recipe-instruction">
+                            <h4>Tarif</h4>
+                            <p>${recipe.instruction}</p>
+                        </div>
+                        <div class="recipe-ingredients">
+                            <h4>Malzemeler</h4>
+                            <ul>
+                                ${recipe.ingredients.map(ingredient => `<li>${ingredient}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+        return recipeHTML;
+    }
+
+    // Gelen verileri kullanarak sayfayı günceller
+    function updatePage(recipes) {
+        var recipeListDiv = document.getElementById("recipeList");
+        var recipeListHTML = "";
+
+        for (var i = 0; i < recipes.length; i++) {
+            var recipeHTML = createRecipeHTML(recipes[i]);
+            recipeListHTML += recipeHTML;
+        }
+
+        recipeListDiv.innerHTML = recipeListHTML;
+    }
+
+    // Verileri sunucudan get isteği ile alır
+    fetch('http://localhost:8080/recipe/getAll')
+        .then(response => response.json())
+        .then(data => updatePage(data))
+        .catch(error => console.error('Hata:', error));
+
+</script>
+</body>
+</html>

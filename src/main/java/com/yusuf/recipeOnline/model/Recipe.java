@@ -1,5 +1,6 @@
 package com.yusuf.recipeOnline.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,9 +27,11 @@ public class Recipe {
     private Long user_id;
     @JoinColumn(name = "category_id")
     private Long category_id;
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private User user;
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "category_id", insertable = false, updatable = false)
     private Category category;
@@ -37,12 +40,7 @@ public class Recipe {
     @Lob
     private byte[] photo;
 
-    public void setPhoto(MultipartFile file) {
-        try {
-            this.photo = file.getBytes();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void setPhoto(byte[] photo) {
+        this.photo = photo;
     }
-
 }
