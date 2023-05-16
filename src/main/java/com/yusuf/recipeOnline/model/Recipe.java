@@ -22,6 +22,7 @@ public class Recipe {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
+    @Column(length = 5000)
     private String instruction;
     @JoinColumn(name = "user_id")
     private Long user_id;

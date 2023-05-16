@@ -191,12 +191,12 @@
 <nav>
     <div class="menu">
         <div class="logo">
-            <a href="#">Tarif Sepeti</a>
+            <a href="http://localhost:8080/homepage">Tarif Sepeti</a>
         </div>
         <ul>
-            <li><a href="#">Anasayfa</a></li>
-            <li><a href="#">Tarifler</a></li>
-            <li><a href="#"><i class="fa-solid fa-user"></i></a></li>
+            <li><a href="http://localhost:8080/homepage">Anasayfa</a></li>
+            <li><a href="http://localhost:8080/recipe">Tarifler</a></li>
+            <li><a href="http://localhost:8080/user"><i class="fa-solid fa-user"></i></a></li>
         </ul>
     </div>
 </nav>
@@ -258,7 +258,7 @@
         var input = document.createElement("input");
         input.type = "text";
         input.classList.add("ingredient");
-        input.required = true;
+        input.required = false;
         li.appendChild(input);
         ingredientsList.appendChild(li);
     }

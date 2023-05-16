@@ -9,7 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDto {
-    private String email;
-    private String password;
+public class FavoriteDto {
+    private Long user_id;
+    private Long recipe_id;
 }
+

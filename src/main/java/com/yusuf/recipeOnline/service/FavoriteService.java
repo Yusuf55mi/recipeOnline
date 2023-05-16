@@ -37,7 +37,7 @@ public class FavoriteService {
         return favoriteRepository.save(favorite);
     }
 
-    public void deleteFavorite(User user, Recipe recipe) {
-        favoriteRepository.deleteByUserAndRecipe(user, recipe);
+    public void deleteFavorite(Favorite favorite) {
+        favoriteRepository.delete(favorite);
     }
 }

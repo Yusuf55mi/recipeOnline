@@ -1,9 +1,13 @@
 package com.yusuf.recipeOnline.controller;
 
+import com.yusuf.recipeOnline.dto.FavoriteDto;
 import com.yusuf.recipeOnline.model.Favorite;
 import com.yusuf.recipeOnline.model.Recipe;
 import com.yusuf.recipeOnline.model.User;
+import com.yusuf.recipeOnline.repository.UserRepository;
 import com.yusuf.recipeOnline.service.FavoriteService;
+import com.yusuf.recipeOnline.service.RecipeService;
+import com.yusuf.recipeOnline.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,9 +17,13 @@ import java.util.List;
 public class FavoriteController {
 
     private final FavoriteService favoriteService;
+    private final UserService userService;
+    private final RecipeService recipeService;
 
-    public FavoriteController(FavoriteService favoriteService) {
+    public FavoriteController(FavoriteService favoriteService, UserRepository userRepository, UserService userService, RecipeService recipeService) {
         this.favoriteService = favoriteService;
+        this.userService = userService;
+        this.recipeService = recipeService;
     }
 
     @GetMapping
@@ -43,7 +51,10 @@ public class FavoriteController {
     }
 
     @PostMapping
-    public Favorite createFavorite(@RequestBody Favorite favorite) {
+    public Favorite createFavorite(@RequestBody FavoriteDto favoriteDto) {
+        User user = userService.getById(favoriteDto.getUser_id());
+        Recipe recipe = recipeService.getById(favoriteDto.getRecipe_id());
+        Favorite favorite = new Favorite(user, recipe);
         return favoriteService.createFavorite(favorite);
     }
 
@@ -51,7 +62,7 @@ public class FavoriteController {
     public void deleteFavorite(@PathVariable Long id) {
         Favorite favorite = favoriteService.getFavoriteById(id);
         if (favorite != null) {
-            favoriteService.deleteFavorite(favorite.getUser(), favorite.getRecipe());
+            favoriteService.deleteFavorite(favoriteService.getFavoriteById(favorite.getId()));
         }
     }
 }

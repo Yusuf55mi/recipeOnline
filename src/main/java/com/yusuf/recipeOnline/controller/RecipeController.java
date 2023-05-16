@@ -30,6 +30,7 @@ public class RecipeController {
     @GetMapping("/getAll")
     public ResponseEntity<List<Recipe>> getAllRecipes() {
         List<Recipe> recipes = recipeService.getAll();
+        
         return ResponseEntity.ok(recipes);
     }
 
@@ -64,11 +65,12 @@ public class RecipeController {
     }
 
     @PostMapping("/{id}/photo")
-    public String uploadImage(@PathVariable Long id, @RequestParam("file") MultipartFile file) throws IOException {
+    public ResponseEntity<?> uploadImage(@PathVariable Long id, @RequestParam("file") MultipartFile file) throws IOException {
         recipeService.uploadFile(id, file);
-        return "Image saved on database";
+        if (recipeService.getById(id) != null) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
-
-
 }
-
