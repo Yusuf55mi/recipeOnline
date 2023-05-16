@@ -228,6 +228,7 @@
         </li>
     </ul>
     <br>
+
     <button type="submit">Tarifi Kaydet</button>
 </form>
 
@@ -296,12 +297,13 @@
         xhr.onload = function () {
             if (xhr.readyState === XMLHttpRequest.DONE) {
                 if (xhr.status === 201) {
-                    window.location.href = "http://localhost:8080/homepage";
+                    window.location.href = "http://localhost:8080/addPhoto";
                 } else {
                     alert("Ekleme başarısız!");
                 }
             }
         };
+
     });
 
 </script>

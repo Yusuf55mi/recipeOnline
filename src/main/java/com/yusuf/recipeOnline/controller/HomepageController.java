@@ -13,5 +13,10 @@ public class HomepageController {
         return "homepage";
     }
 
+    @GetMapping("/addPhoto")
+    public String addPhoto() {
+        return "addPhoto";
+    }
+
 
 }

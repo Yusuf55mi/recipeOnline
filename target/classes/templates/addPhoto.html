@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://kit.fontawesome.com/b676c3938a.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/bootstrap.min.css">
+    <script src="/bootstrap.min.js"></script>
+
+
     <title> Tarif Sepeti </title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
@@ -185,6 +189,17 @@
             background-color: #ae4cff;
         }
 
+        .form-control {
+            display: block;
+            width: 85%;
+            padding: 10px;
+            background: -webkit-linear-gradient(left, #580066, #ae4cff);;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
     </style>
 </head>
 <body>
@@ -201,111 +216,59 @@
     </div>
 </nav>
 
-
-<h1>Yemek Tarifi Girişi</h1>
+<h1>Fotoğraf Ekleme</h1>
 <form id="recipeForm">
-    <label for="user_id">Kullanıcı ID:</label>
-    <input type="text" id="user_id" required><br><br>
+    <label for="recipe_id">Tarif ID:</label>
+    <input type="text" id="recipe_id" required><br><br>
 
-    <label for="title">Tarif Başlığı:</label>
-    <input type="text" id="title" required><br><br>
+    <div>
+        <label for="formFile" class="form-label">Yüklenecek fotoğrafı seçiniz: </label>
+        <input class="form-control" type="file" id="formFile">
+    </div>
+    <span id="fileSizeError" style="color: red; display: none;">Fotoğrafın boyutu 10MB'dan fazla olamaz.</span><br><br>
 
-    <label for="instruction">Yapılışı:</label>
-    <textarea id="instruction" required></textarea><br><br>
-
-    <label for="category">Kategori:</label>
-    <select id="category" required>
-        <option value="">Kategori Seçin</option>
-    </select><br><br>
-
-    <label for="ingredients">Malzemeler:</label>
-    <ul id="ingredients">
-
-        <button type="button" onclick="addIngredient()">Malzeme Ekle</button>
-        <li>
-            <input type="text" class="ingredient" required>
-
-        </li>
-    </ul>
-    <br>
-
-    <button type="submit">Tarifi Kaydet</button>
+    <button type="button" onclick="submitForm()">Fotoğrafı Kaydet</button>
 </form>
 
 <script>
-    // Kategori listesini backend'den alarak select elementine ekleyen fonksiyon
-    function populateCategories() {
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", "/categories", true);
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                var categories = JSON.parse(xhr.responseText);
+    function submitForm() {
+        const form = document.getElementById("recipeForm");
+        const photoInput = document.getElementById("formFile");
+        const fileSizeError = document.getElementById("fileSizeError");
 
-                var select = document.getElementById("category");
-                categories.forEach(function (category) {
-                    var option = document.createElement("option");
-                    option.value = category.id;
-                    option.text = category.name;
-                    select.appendChild(option);
-                });
-            }
-        };
-        xhr.send();
-    }
+        const recipeId = document.getElementById("recipe_id").value;
+        const file = photoInput.files[0];
 
-    function addIngredient() {
-        var ingredientsList = document.getElementById("ingredients");
-        var li = document.createElement("li");
-        var input = document.createElement("input");
-        input.type = "text";
-        input.classList.add("ingredient");
-        input.required = false;
-        li.appendChild(input);
-        ingredientsList.appendChild(li);
-    }
-
-    // Kategori listesini sayfa yüklendiğinde populateCategories fonksiyonunu çağırarak doldurun
-    window.onload = populateCategories;
-
-    document.getElementById("recipeForm").addEventListener("submit", function (event) {
-        event.preventDefault();
-
-        var title = document.getElementById("title").value;
-        var instruction = document.getElementById("instruction").value;
-        var category = parseInt(document.getElementById("category").value);
-        var user_id = parseInt(document.getElementById("user_id").value);
-
-        var ingredients = [];
-        var ingredientInputs = document.getElementsByClassName("ingredient");
-        for (var i = 0; i < ingredientInputs.length; i++) {
-            ingredients.push(ingredientInputs[i].value);
+        const fileSize = file.size / 1024 / 1024; // Boyutu MB cinsinden hesapla
+        if (fileSize > 10) {
+            fileSizeError.style.display = "block"; // Hata mesajını göster
+            return;
         }
 
-        var recipe = {
-            title: title,
-            instruction: instruction,
-            user_id: user_id,
-            category_id: category,
-            ingredients: ingredients
-        };
+        const reader = new FileReader();
+        reader.onload = function (event) {
+            const fileData = event.target.result;
+            const fileName = file.name;
 
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", "/recipe/add", true);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        var data = JSON.stringify(recipe);
-        xhr.send(data);
-        xhr.onload = function () {
-            if (xhr.readyState === XMLHttpRequest.DONE) {
-                if (xhr.status === 201) {
-                    window.location.href = "http://localhost:8080/addPhoto";
+            const formData = new FormData();
+            formData.append("recipePhoto", new Blob([fileData]), fileName);
+
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", `http://localhost:8080/recipe/${recipeId}/photo`);
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    alert("Fotoğraf başarıyla yüklendi!");
+                    // Yükleme başarılı olduğunda yapılacak işlemler buraya yazılabilir
                 } else {
-                    alert("Ekleme başarısız!");
+                    alert("Fotoğraf yüklenirken bir hata oluştu.");
+                    // Yükleme hatası durumunda yapılacak işlemler buraya yazılabilir
                 }
-            }
+            };
+            xhr.send(formData);
         };
-
-    });
-
+        reader.readAsArrayBuffer(file);
+    }
 </script>
+
 </body>
 </html>

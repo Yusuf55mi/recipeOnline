@@ -1,5 +1,6 @@
 package com.yusuf.recipeOnline.controller;
 
+import com.yusuf.recipeOnline.component.BASE64DecodedMultipartFile;
 import com.yusuf.recipeOnline.model.Recipe;
 import com.yusuf.recipeOnline.service.RecipeService;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -30,7 +31,7 @@ public class RecipeController {
     @GetMapping("/getAll")
     public ResponseEntity<List<Recipe>> getAllRecipes() {
         List<Recipe> recipes = recipeService.getAll();
-        
+
         return ResponseEntity.ok(recipes);
     }
 
@@ -65,8 +66,14 @@ public class RecipeController {
     }
 
     @PostMapping("/{id}/photo")
-    public ResponseEntity<?> uploadImage(@PathVariable Long id, @RequestParam("file") MultipartFile file) throws IOException {
-        recipeService.uploadFile(id, file);
+    public ResponseEntity<?> uploadImage(@PathVariable Long id, @RequestParam("recipePhoto") MultipartFile file) throws IOException {
+        // MultipartFile'ı kullanarak dosyanın içeriğine erişebilirsiniz
+        byte[] fileBytes = file.getBytes();
+
+        MultipartFile multipartFile = new BASE64DecodedMultipartFile(fileBytes);
+
+        recipeService.uploadFile(id, multipartFile);
+        
         if (recipeService.getById(id) != null) {
             return new ResponseEntity<>(HttpStatus.OK);
         } else {

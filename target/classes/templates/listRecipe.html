@@ -289,8 +289,8 @@
     function addToFavorites(recipeId) {
         var userId = parseInt(document.querySelector('input[name="user_id"]').value, 10);
         var data = {
-            userId: userId,
-            recipeId: recipeId
+            user_id: userId,
+            recipe_id: recipeId
         };
 
         fetch('http://localhost:8080/favorite', {
