@@ -256,8 +256,8 @@
             </div>
             <div class="recipe-content">
                 <div class="recipe-title">${recipe.title}</div>
-                <div class="recipe-category">Kategori: ${recipe.categoryName}</div>
-                <div class="recipe-user">Kullanıcı: ${recipe.userName}</div>
+                <div class="recipe-category">Kategori: ${recipe.category_id}</div>
+                <div class="recipe-user">Kullanıcı: ${recipe.username}</div>
                 <div class="recipe-instruction">
                     <h4>Tarif</h4>
                     <p>${recipe.instruction}</p>
@@ -302,9 +302,9 @@
         })
             .then(response => {
                 if (response.ok) {
-                    console.log('Tarif favorilere eklendi.');
+                    alert('Tarif favorilere eklendi.');
                 } else {
-                    console.error('Favorilere ekleme hatası:', response.status);
+                    alert('Favorilere ekleme hatası:', response.status);
                 }
             })
             .catch(error => console.error('Hata:', error));
